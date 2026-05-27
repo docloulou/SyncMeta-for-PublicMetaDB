@@ -31,7 +31,14 @@ from src.anilist_client import AniListClient
 from src.matcher import ItemMatcher
 from src.mdblist_client import MdbListClient
 from src.publicmetadb_client import PublicMetaDBClient
-from src.profile_store import ProfileStore, merge_credentials, normalize_credentials, normalize_profile_options
+from src.profile_store import (
+    MIN_RESUME_SYNC_INTERVAL_SECONDS,
+    MIN_WATCHED_HISTORY_INTERVAL_SECONDS,
+    ProfileStore,
+    merge_credentials,
+    normalize_credentials,
+    normalize_profile_options,
+)
 from src.simkl_client import SimklClient
 from src.sync_service import SyncCancelled, SyncService, SyncStats, _status_list_name
 from src.trakt_client import TraktClient
@@ -1181,7 +1188,11 @@ def _compress_response(response):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        min_resume_sync_interval_seconds=MIN_RESUME_SYNC_INTERVAL_SECONDS,
+        min_watched_history_interval_seconds=MIN_WATCHED_HISTORY_INTERVAL_SECONDS,
+    )
 
 
 @app.route("/healthz", methods=["GET"])
