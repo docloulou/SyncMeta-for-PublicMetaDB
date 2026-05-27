@@ -1298,19 +1298,18 @@ class ProfileStore:
                 else:
                     profile["next_sync_at"] = None
                 if normalized_options.get("auto_history_sync") and normalized_options["activity_history_source"] != "off":
-                    profile["next_history_sync_at"] = (
-                        previous_next_history_sync_at
-                        if previous_auto_history_sync and previous_history_source != "off" and previous_next_history_sync_at
-                        else self._next_history_sync_iso(normalized_options["trakt_watched_history_interval_seconds"], profile_id)
-                    )
+                    if previous_auto_history_sync and previous_history_source != "off" and previous_next_history_sync_at:
+                        profile["next_history_sync_at"] = previous_next_history_sync_at
+                    else:
+                        profile["next_history_sync_at"] = utc_now_iso()
                 else:
                     profile["next_history_sync_at"] = None
                 if normalized_options.get("auto_resume_sync") and normalized_options["activity_resume_source"] != "off":
-                    profile["next_resume_sync_at"] = (
-                        previous_next_resume_sync_at
-                        if previous_auto_resume_sync and previous_resume_source != "off" and previous_next_resume_sync_at
-                        else self._next_resume_sync_iso(normalized_options["trakt_resume_progress_interval_seconds"], profile_id)
-                    )
+                    if previous_auto_resume_sync and previous_resume_source != "off" and previous_next_resume_sync_at:
+                        profile["next_resume_sync_at"] = previous_next_resume_sync_at
+                    else:
+                        # Newly enabled: schedule immediately so the first auto sync fires on the next scheduler poll
+                        profile["next_resume_sync_at"] = utc_now_iso()
                 else:
                     profile["next_resume_sync_at"] = None
             self._save_locked()
@@ -1345,19 +1344,17 @@ class ProfileStore:
                 else:
                     profile["next_sync_at"] = None
                 if normalized_options.get("auto_history_sync") and normalized_options["activity_history_source"] != "off":
-                    profile["next_history_sync_at"] = (
-                        previous_next_history_sync_at
-                        if previous_auto_history_sync and previous_history_source != "off" and previous_next_history_sync_at
-                        else self._next_history_sync_iso(normalized_options["trakt_watched_history_interval_seconds"], profile_id)
-                    )
+                    if previous_auto_history_sync and previous_history_source != "off" and previous_next_history_sync_at:
+                        profile["next_history_sync_at"] = previous_next_history_sync_at
+                    else:
+                        profile["next_history_sync_at"] = utc_now_iso()
                 else:
                     profile["next_history_sync_at"] = None
                 if normalized_options.get("auto_resume_sync") and normalized_options["activity_resume_source"] != "off":
-                    profile["next_resume_sync_at"] = (
-                        previous_next_resume_sync_at
-                        if previous_auto_resume_sync and previous_resume_source != "off" and previous_next_resume_sync_at
-                        else self._next_resume_sync_iso(normalized_options["trakt_resume_progress_interval_seconds"], profile_id)
-                    )
+                    if previous_auto_resume_sync and previous_resume_source != "off" and previous_next_resume_sync_at:
+                        profile["next_resume_sync_at"] = previous_next_resume_sync_at
+                    else:
+                        profile["next_resume_sync_at"] = utc_now_iso()
                 else:
                     profile["next_resume_sync_at"] = None
             self._save_locked()
