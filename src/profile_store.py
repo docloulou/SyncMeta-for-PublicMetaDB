@@ -824,17 +824,20 @@ class ProfileStore:
     @classmethod
     def _next_sync_iso(cls, interval_seconds: int, profile_id: str = "") -> str:
         jitter = cls._schedule_jitter_seconds(profile_id, "lists", LIST_SYNC_JITTER_SECONDS) if profile_id else 0
-        return (utc_now() + timedelta(seconds=interval_seconds + jitter)).isoformat()
+        effective_jitter = min(jitter, interval_seconds)
+        return (utc_now() + timedelta(seconds=interval_seconds + effective_jitter)).isoformat()
 
     @classmethod
     def _next_resume_sync_iso(cls, interval_seconds: int, profile_id: str = "") -> str:
         jitter = cls._schedule_jitter_seconds(profile_id, "resume", RESUME_SYNC_JITTER_SECONDS) if profile_id else 0
-        return (utc_now() + timedelta(seconds=interval_seconds + jitter)).isoformat()
+        effective_jitter = min(jitter, interval_seconds)
+        return (utc_now() + timedelta(seconds=interval_seconds + effective_jitter)).isoformat()
 
     @classmethod
     def _next_history_sync_iso(cls, interval_seconds: int, profile_id: str = "") -> str:
         jitter = cls._schedule_jitter_seconds(profile_id, "history", HISTORY_SYNC_JITTER_SECONDS) if profile_id else 0
-        return (utc_now() + timedelta(seconds=interval_seconds + jitter)).isoformat()
+        effective_jitter = min(jitter, interval_seconds)
+        return (utc_now() + timedelta(seconds=interval_seconds + effective_jitter)).isoformat()
 
     @staticmethod
     def _normalize_sync_modes(sync_modes: dict | None) -> dict[str, bool]:
